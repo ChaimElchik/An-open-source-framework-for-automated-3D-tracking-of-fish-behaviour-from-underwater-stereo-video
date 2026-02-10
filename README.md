@@ -1,0 +1,2 @@
+# An-open-source-framework-for-automated-3D-tracking-of-fish-behaviour-from-underwater-stereo-video
+An open-source, modular framework for high-precision 3D tracking and behavioral analysis of aquatic species. It integrates YOLO, BoT-SORT, Custome RE-ID algorithm, refractive stereo vision correction, and automated ethological metrics (velocity, acceleration, heatmaps) to convert raw underwater stereo video into actionable biological data.
