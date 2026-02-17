@@ -5,8 +5,6 @@ from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
 import os
 
-# --- ANALYSIS FUNCTIONS (Preserved from your original script) ---
-
 def Fish_Trajectories_Graphs(df, output_dir):
     grouped = df.groupby('id') # Changed from 'fish_id' to 'id' to match previous output
     for fish_id, group in grouped:
