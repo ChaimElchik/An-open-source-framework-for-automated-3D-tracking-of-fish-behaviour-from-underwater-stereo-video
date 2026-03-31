@@ -92,3 +92,19 @@ python evaluate_flsea.py \
     --right_dir path/to/right_images \
     --calib path/to/flsea_stereo.yaml
 ```
+
+### 4. Evaluating 2D Tracking & Re-ID Performance
+Quantifies continuous tracking resilience utilising standardised metrics (MOTA, IDF1, and Identity Switches) against complex *in situ* biological sequences.
+```bash
+cd ../EvaluationCode
+# Evaluates baseline vs ViT Re-ID track recovery
+python Tracker_Eval.py
+python IDF1.py
+```
+
+### 5. Evaluating Stereo Geometric Matching
+Quantifies the refractive stereo geometry mapping via Precision, Recall, and F1-Score using manually annotated ground-truth correspondence tables.
+```bash
+cd ../EvaluationCode
+python Evaluate_Stereo_Algorithm.py
+```
