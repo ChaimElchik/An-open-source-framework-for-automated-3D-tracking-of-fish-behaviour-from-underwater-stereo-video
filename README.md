@@ -64,3 +64,31 @@ Running the pipeline will automatically generate the following sub-directories i
 
 - `/mots/`: Contains intermediate and final coordinate mappings (`cam1_raw.csv`, `cam2_mapped.csv`, `3d_trajectory.csv`).
 - `/videos/`: Contains the final rendered `.mp4` video files with IDs and bounding boxes overlaid on the footage.
+
+## Evaluation Suite
+
+To verify the mathematical accuracy and algorithmic performance of the pipeline against established ground truth datasets, several evaluation scripts are provided in the `EvaluationCode/` directory located alongside this pipeline. These scripts directly import and benchmark the core modules.
+
+### 1. Evaluating 3D Refractive Simulation
+Validates the custom ray-tracing triangulation against standard pinhole assumptions using generated synthetic ground truth coordinates.
+```bash
+cd ../EvaluationCode
+python Simulate_Stereo_Accuracy.py
+```
+
+### 2. Evaluating on the Tsinghua Dataset
+Benchmarks the 3D metric accuracy of the pipeline using real-world underwater objects against Kinect-captured 3D meshes.
+```bash
+cd ../EvaluationCode
+python evaluate_tsinghua.py
+```
+
+### 3. Evaluating on the FLSea Dataset
+Tests the real-world operational robustness of the epipolar tracking and unmodified native triangulation using an external dome-port validation dataset.
+```bash
+cd ../EvaluationCode
+python evaluate_flsea.py \
+    --left_dir path/to/left_images \
+    --right_dir path/to/right_images \
+    --calib path/to/flsea_stereo.yaml
+```
