@@ -8,12 +8,11 @@ try:
     import ProcessVideoPair as tracking_module       # Step 1: Detection & Tracking
     import StereoMatching as matching_module                  # Step 2: Refractive Stereo Matching
     import ThreeDCordinate_Maker as triangulation_module # Step 3: 3D Triangulation
-    import InsightsGen as analysis_module            # Step 4: Behavioral Analysis
-    import OutPutVideoGenerater as viz_module        # Step 5: Visualization
+    import OutPutVideoGenerater as viz_module        # Step 4: Visualization
 except ImportError as e:
     print(f"CRITICAL ERROR: Could not import one of the required scripts. \n{e}")
     print("Ensure ProcessVideoPair.py, StereoMatching.py, ThreeDCordinate_Maker.py, "
-          "InsightsGen.py, and OutPutVideoGenerater.py are in the folder.")
+          "and OutPutVideoGenerater.py are in the folder.")
     exit(1)
 
 def run_pipeline(vid1_path, vid2_path, calibration_mat, model_path, output_root):
@@ -24,17 +23,15 @@ def run_pipeline(vid1_path, vid2_path, calibration_mat, model_path, output_root)
     1. Detection & BoT-SORT Tracking (ProcessVideoPair.py)
     2. Refractive Epipolar Matching (StereoMatching.py)
     3. 3D Triangulation (ThreeDCordinate_Maker.py)
-    4. Behavioral Insights (InsightsGen.py)
-    5. Visualization Overlay (OutPutVideoGenerater.py)
+    4. Visualization Overlay (OutPutVideoGenerater.py)
     """
     
     # --- Setup Directories ---
     root = Path(output_root)
     mots_dir = root / "mots"          # For intermediate CSVs
-    analysis_dir = root / "analysis"  # For graphs and stats
     video_out_dir = root / "videos"   # For final overlay videos
     
-    for d in [mots_dir, analysis_dir, video_out_dir]:
+    for d in [mots_dir, video_out_dir]:
         d.mkdir(parents=True, exist_ok=True)
 
     print(f"=== Starting 3D Fish Tracking Pipeline ===")
@@ -118,25 +115,9 @@ def run_pipeline(vid1_path, vid2_path, calibration_mat, model_path, output_root)
         return
 
     # -------------------------------------------------------------------------
-    # STEP 4: Extracting Behavioral Insights ("Key Moments")
+    # STEP 4: Visualization
     # -------------------------------------------------------------------------
-    print("\n[Step 4/5] Generating Behavioral Insights...")
-    try:
-        # Runs kinematics, spatial distribution, and "key moment" detection
-        analysis_module.run_all_analysis(
-            str(trajectory_3d), 
-            str(analysis_dir),
-            video_path=str(vid1_path)
-        )
-        print("✓ Analysis complete. Graphs and stats saved.")
-    except Exception as e:
-        print(f"❌ Error in Step 4: {e}")
-        # We continue to Step 5 even if analysis fails
-
-    # -------------------------------------------------------------------------
-    # STEP 5: Visualization
-    # -------------------------------------------------------------------------
-    print("\n[Step 5/5] Generating Overlay Videos...")
+    print("\n[Step 4/4] Generating Overlay Videos...")
     try:
         # Camera 1 Overlay
         viz_module.create_annotated_video(
