@@ -1,0 +1,63 @@
+# 3D Fish Tracking & Re-ID Pipeline
+
+A robust, high-precision 3D tracking framework designed to analyze fish behavior in stereo underwater video datasets. This pipeline integrates object detection, multi-object tracking, visual Re-Identification (Re-ID) using Vision Transformers, Refractive Stereo Matching, and 3D Kinematic Analysis into an automated workflow.
+
+## Features
+
+- **2D Detection & Tracking**: Utilizes YOLO object detection paired with BoT-SORT for resilient temporal tracking.
+- **Advanced Visual Re-ID**: A custom Vision Transformer (ViT) module that "heals" fragmented tracks by extracting visual embeddings and intelligently matching broken tracklets across time, factoring in temporal and kinematic constraints.
+- **Refractive Stereo Matching**: Epipolar geometric matching module that handles complex **Air-Glass-Water** refractive interfaces, drastically improving 3D mapping accuracy over standard pinhole camera assumption.
+- **3D Triangulation**: Computes metric 3D coordinates (X, Y, Z) from matched 2D stereo trajectories.
+- **Behavioral Analysis (InsightsGen)**: Automatically generates statistical insights and graphs summarizing fish kinematics (speed, acceleration), spatial distribution, depth analysis, and key movement changes.
+- **Visualization**: Generates custom annotated overlay videos natively.
+
+## Implementation Overview
+
+The main execution sequence is handled by `Run_PipeLine.py`, divided into 5 clear steps:
+1. **Detection & Tracking** (`ProcessVideoPair.py` and `AdvancedReID.py`): Performs YOLO detection followed by tracking and Re-ID to generate temporally consistent 2D IDs.
+2. **Refractive Epipolar Matching** (`StereoMatching.py`): Matches tracks between the left and right cameras using epipolar geometry and refractive correction.
+3. **3D Triangulation** (`ThreeDCordinate_Maker.py`): Reconstructs 3D real-world coordinates from stereo matching results.
+4. **Behavioral Insights** (`InsightsGen.py`): Evaluates metric 3D data to generate behavioral graphs and kinematic statistics.
+5. **Visualization Overlay** (`OutPutVideoGenerater.py`): Annotates original video files with final tracking data.
+
+## Installation
+
+Ensure you have a working Python environment (Python 3.8+ recommended).
+
+1. Clone this repository.
+2. Install the required dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+*Note: The Re-ID and YOLO modules will automatically leverage any available NVIDIA GPUs (CUDA) or Apple Silicon GPUs (MPS) for hardware acceleration.*
+
+## Usage
+
+To run the full end-to-end pipeline, use the `Run_PipeLine.py` script. You must provide videos from your dual camera setup and a MATLAB `.mat` calibration file.
+
+```bash
+python Run_PipeLine.py --vid1 path/to/cam1.mp4 \
+                       --vid2 path/to/cam2.mp4 \
+                       --calib path/to/stereoParams.mat \
+                       --model yolov8n.pt \
+                       --output ./results
+```
+
+### Arguments
+
+| Argument | Description | Default |
+| --- | --- | --- |
+| `--vid1` | **(Required)** Path to the Left Camera Video. | |
+| `--vid2` | **(Required)** Path to the Right Camera Video. | |
+| `--calib` | **(Required)** Path to the Stereo Parameters `.mat` file. | |
+| `--model` | Path to the YOLO weights to use for detection. | `yolov8n.pt` |
+| `--output` | Root directory to store all outputs (stats, graphs, videos). | `./results` |
+
+## Outputs Structure
+
+Running the pipeline will automatically generate the following sub-directories inside your chosen `--output` folder:
+
+- `/mots/`: Contains intermediate and final coordinate mappings (`cam1_raw.csv`, `cam2_mapped.csv`, `3d_trajectory.csv`).
+- `/analysis/`: Contains the generated graphs for heatmaps, 3D path lengths, temporal movement, and acceleration.
+- `/videos/`: Contains the final rendered `.mp4` video files with IDs and bounding boxes overlaid on the footage.
