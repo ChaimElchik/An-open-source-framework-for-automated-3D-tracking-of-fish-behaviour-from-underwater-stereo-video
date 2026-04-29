@@ -1,0 +1,19 @@
+name: fish_tracking_env
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pytorch>=2.0.0
+  - torchvision>=0.15.0
+  - opencv>=4.8.0
+  - pandas>=2.0.0
+  - numpy>=1.24.0
+  - scipy>=1.11.0
+  - matplotlib>=3.7.0
+  - seaborn>=0.12.0
+  - tqdm>=4.65.0
+  - pip
+  - pip:
+    - ultralytics>=8.0.0
